@@ -413,6 +413,11 @@ class GrammarParser:
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     def to_bnf_grammar(self, lname):
+        """
+        Generate Nuance BNF Format grammar from the grammar used by hmi
+        :param lname: The root
+        :return: BNF String
+        """
         bfn_rule_dict = {}
         for name, rule in self.rules.iteritems():
             bfn_rule_dict[rule.lname] = " | ".join([" ".join("<" + c.name + ">"

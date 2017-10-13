@@ -1,9 +1,10 @@
 #!/usr/bin/env python
+import random
 from collections import namedtuple
 
 import rospy
 from actionlib import SimpleActionClient, GoalStatus
-from hmi.common import random_sentence, result_from_ros, verify_grammar
+from hmi.common import random_sentences, result_from_ros, verify_grammar
 from hmi_msgs.msg import QueryAction, QueryGoal
 
 
@@ -84,8 +85,8 @@ class Client(object):
 
         return self._client.get_result()
 
-    def _send_query(self, description, grammar, target):
-        goal = QueryGoal(description=description, grammar=grammar, target=target)
+    def _send_query(self, description, example_sentences, grammar, target):
+        goal = QueryGoal(description=description, example_sentences=example_sentences, grammar=grammar, target=target)
         self._client.send_goal(goal, feedback_cb=self._feedback_callback)
 
     def query(self, description, grammar, target, timeout=10):
@@ -97,9 +98,10 @@ class Client(object):
         # Verify the incoming grammar
         verify_grammar(grammar, target)
 
-        _print_example(random_sentence(grammar, target))
+        example_sentences = random_sentences(grammar, target, 10)
+        _print_example(random.choice(example_sentences))
 
-        self._send_query(description, grammar, target)
+        self._send_query(description, example_sentences, grammar, target)
         answer = self._wait_for_result_and_get(timeout=timeout)
 
         self.last_talker_id = answer.talker_id  # Keep track of the last talker_id

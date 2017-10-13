@@ -160,7 +160,7 @@ class HMIServerGUIInterface(AbstractHMIServer):
         # To check if we need to publish feedback
         self._latest_text = ""
 
-    def _determine_answer(self, description, spec, choices, is_preempt_requested):
+    def _determine_answer(self, description, example_sentences, spec, choices, is_preempt_requested):
         """
         Sets some members and blocks until we can either an answer is created
         or the goal is cancelled

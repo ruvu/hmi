@@ -33,10 +33,10 @@ def verify_grammar(grammar, target=None):
     grammar_parser.verify(target)
 
 
-def random_sentence(grammar, target):
+def random_sentences(grammar, target, num):
     grammar_parser = GrammarParser.fromstring(grammar)
     grammar_parser.verify()
-    return grammar_parser.get_random_sentence(target)
+    return grammar_parser.get_random_sentences(target, num)
 
 
 def parse_sentence(sentence, grammar, target):

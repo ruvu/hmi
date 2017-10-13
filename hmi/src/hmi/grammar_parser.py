@@ -433,5 +433,22 @@ class GrammarParser:
 
         return sentences
 
-    def get_random_sentence(self, lname):
-        return self.get_random_sentences(lname, 1)[0]
+    # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
+
+    def to_bnf_grammar(self, lname):
+        """
+        Generate Nuance BNF Format grammar from the grammar used by hmi
+        :param lname: The root
+        :return: BNF String
+        """
+        bfn_rule_dict = {}
+        for name, rule in self.rules.iteritems():
+            bfn_rule_dict[rule.lname] = " | ".join([" ".join("<" + c.name + ">"
+                                                             if c.is_variable else c.name
+                                                             for c in option.conjuncts) for option in rule.options])
+
+        string = '#BNF+EMV1.1;\n!grammar "BNFEnglish";\n!start <{}>;\n'.format(lname)
+        for k, v in bfn_rule_dict.iteritems():
+            string += "<{}>: {};\n".format(k, v)
+
+        return string

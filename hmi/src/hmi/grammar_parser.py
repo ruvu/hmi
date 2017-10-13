@@ -50,11 +50,11 @@ This returns a string. However, this string represents a (nested) dictionary tha
 
 Semantics describe what a sentence means. In this case, it describes what action to perform and with what to perform it.
 """
-
 import random
 import re
 import yaml
 from yaml import MarkedYAMLError
+import itertools
 
 
 class Alternative:
@@ -374,38 +374,64 @@ class GrammarParser:
         return Alternative(alternative_values)
 
     @staticmethod
-    def _get_random_sentence_from_tree_and_delete_leaf_node(node):
+    def _get_all_sentences_from_tree(node, max_sentences):
         """
 
-        :param node:
-        :return: List of strings
+        :param node: Node to expand to generate sentences
+        :param max_sentences: Maximum allowed number of sentences (to avoid high calculation times)
+        :return: List of all possible sentences in the given grammar
+
+        TODO: Reuse previously expanded rules to reduce number of expanded nodes.
+        E.g. {node1: string_list1, ...} and do a lookup before expanding
         """
-        string_list = ""
         if isinstance(node, Alternative):
-            string_list += GrammarParser._get_random_sentence_from_tree_and_delete_leaf_node(random.choice(node.values))
-        elif isinstance(node, Sequence):
+            string_list = []
             for value in node.values:
-                string_list += GrammarParser._get_random_sentence_from_tree_and_delete_leaf_node(value)
+                res = GrammarParser._get_all_sentences_from_tree(value, max_sentences)
+                string_list += res
+        elif isinstance(node, Sequence):
+            string_list = []
+            for value in node.values:
+                res = GrammarParser._get_all_sentences_from_tree(value, max_sentences)
+                if string_list:
+                    string_list = [" ".join(e) for e in itertools.product(string_list, res)]
+                else:
+                    string_list = res
         elif isinstance(node, str):
-            string_list += node + " "
+            string_list = [node]
+        if len(string_list) > max_sentences:
+            raise Exception("Too many options in grammar.")
         return string_list
 
-    # @staticmethod
-    # def _get_random_sentence_from_tree_and_delete_leaf_node(tree):
-    #     str_list = []
-    #
-    #     subtree = tree
-    #     while subtree:
-    #         if isinstance(subtree, Alternative):
-    #             subtree = random.choice(subtree)
-    #         elif isinstance(subtree, Sequence):
-    #             for value in subtree.values:
-    #
+    @staticmethod
+    def _get_random_sentence_from_tree(node):
+        """
+        :param node: Node to expand to generate sentences
+        :return: A randomly generated sentence according to the given node
+        """
+        sentence = ""
+        if isinstance(node, Alternative):
+            sentence = GrammarParser._get_random_sentence_from_tree(random.choice(node.values))
+        elif isinstance(node, Sequence):
+            word_list = []
+            for value in node.values:
+                word_list.append(GrammarParser._get_random_sentence_from_tree(value))
+            sentence = " ".join(word_list)
+        elif isinstance(node, str):
+            sentence = node
+        return sentence
 
     def get_random_sentences(self, lname, num):
         tree = self.get_tree(lname)
 
-        return [self._get_random_sentence_from_tree_and_delete_leaf_node(tree)]
+        try:
+            sentences = self._get_all_sentences_from_tree(tree, 1e5)
+            random.shuffle(sentences)
+            sentences = sentences[:num]
+        except:
+            sentences = [self._get_random_sentence_from_tree(tree) for _ in range(0, num)]
+
+        return sentences
 
     def get_random_sentence(self, lname):
         return self.get_random_sentences(lname, 1)[0]

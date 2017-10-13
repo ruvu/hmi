@@ -36,7 +36,12 @@ grammar_parser = GrammarParser.fromstring(grammar)
 if args.verify:
     grammar_parser.verify()
 
-sentence = args.sentence if args.sentence else grammar_parser.get_random_sentence(args.target)
+if args.sentence:
+    sentence = args.sentence
+else:
+    options = grammar_parser.get_random_sentences(args.target, 10)
+    print "Sentence options:\n\n{}\n\n".format(options)
+    sentence = options[0]
 
 print "Parsing sentence:\n\n{}\n\n".format(sentence)
 

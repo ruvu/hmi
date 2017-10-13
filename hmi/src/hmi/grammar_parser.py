@@ -421,11 +421,11 @@ class GrammarParser:
             sentence = node
         return sentence
 
-    def get_random_sentences(self, lname, num):
+    def get_random_sentences(self, lname, num, max_num=1e5):
         tree = self.get_tree(lname)
 
         try:
-            sentences = self._get_all_sentences_from_tree(tree, 1e5)
+            sentences = self._get_all_sentences_from_tree(tree, max_num)
             random.shuffle(sentences)
             sentences = sentences[:num]
         except:

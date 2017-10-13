@@ -106,6 +106,6 @@ class Client(object):
 
         self.last_talker_id = answer.talker_id  # Keep track of the last talker_id
 
-        result = result_from_ros(answer)
+        result = result_from_ros(answer, grammar, target)
         _print_result(result)
         return result

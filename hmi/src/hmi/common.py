@@ -19,8 +19,14 @@ def result_to_ros(result):
     )
 
 
-def result_from_ros(msg):
-    return HMIResult(sentence=msg.sentence, semantics=json.loads(msg.semantics))
+def result_from_ros(msg, grammar, target):
+    if msg.semantics == "":
+        rospy.logwarn("Semantics were not filled in by the server, trying to parse at the client side ...")
+        semantics = parse_sentence(msg.sentence, grammar, target)
+    else:
+        semantics = json.loads(msg.semantics)
+
+    return HMIResult(sentence=msg.sentence, semantics=semantics)
 
 
 def trim_string(data, max_length=75, ellipsis='...'):

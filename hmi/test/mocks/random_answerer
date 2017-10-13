@@ -3,13 +3,13 @@ import random
 
 import rospy
 from hmi import AbstractHMIServer, HMIResult
-from hmi.common import random_sentence, result_from_ros, parse_sentence
+from hmi.common import result_from_ros, parse_sentence
 
 wait_time = 5
 
 
 class HMIServer(AbstractHMIServer):
-    def _determine_answer(self, description, grammar, target, is_preempt_requested):
+    def _determine_answer(self, description, example_sentences, grammar, target, is_preempt_requested):
 
         rospy.loginfo('Waiting for %d seconds', wait_time)
         start = rospy.Time.now()
@@ -18,7 +18,7 @@ class HMIServer(AbstractHMIServer):
             and not rospy.is_shutdown():
             rospy.sleep(0.1)
 
-        sentence = random_sentence(grammar, target)
+        sentence = random.choice(example_sentences)
         rospy.loginfo("Generated random sentence: %s", sentence)
 
         semantics = parse_sentence(sentence, grammar, target)

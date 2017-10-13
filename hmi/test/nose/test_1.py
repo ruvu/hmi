@@ -17,7 +17,7 @@ def test_valid_server():
             self._server = lambda: None
             self._server.is_preempt_requested = None
 
-        def _determine_answer(self, description, grammar, target, is_preempt_requested):
+        def _determine_answer(self, description, example_sentences, grammar, target, is_preempt_requested):
             return QueryResult()
 
         def _set_succeeded(self, result):

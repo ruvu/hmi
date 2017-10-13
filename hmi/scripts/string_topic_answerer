@@ -17,7 +17,7 @@ class StringTopicServer(AbstractHMIServer):
     def _string_callback(self, msg):
         self._string = msg.data
 
-    def _determine_answer(self, description, grammar, target, is_preempt_requested):
+    def _determine_answer(self, description, example_sentences, grammar, target, is_preempt_requested):
         self._string = None
         while not rospy.is_shutdown() and not is_preempt_requested() and not self._string:
             rospy.sleep(.1)

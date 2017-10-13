@@ -28,6 +28,7 @@ class AbstractHMIServer(object):
 
         try:
             result = self._determine_answer(description=goal.description,
+                                            example_sentences=goal.example_sentences,
                                             grammar=goal.grammar,
                                             target=goal.target,
                                             is_preempt_requested=self._is_preempt_requested)

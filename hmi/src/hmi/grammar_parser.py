@@ -433,9 +433,6 @@ class GrammarParser:
 
         return sentences
 
-    def get_random_sentence(self, lname):
-        return self.get_random_sentences(lname, 1)[0]
-
     # - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
     def to_bnf_grammar(self, lname):

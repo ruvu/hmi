@@ -151,7 +151,7 @@ class HMIClient(SimpleActionClient):
 if __name__ == '__main__':
     rospy.init_node('multi_client')
 
-    ns = rospy.get_namespace() + 'hmi'
+    ns = rospy.get_name()
 
     MultiClient(rospy.get_name(), ns)
     rospy.spin()

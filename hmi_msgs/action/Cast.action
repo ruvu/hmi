@@ -19,7 +19,7 @@ int32 EMOTION_DISGUSTED=11
 int32 EMOTION_WHISPER=12
 
 string  message     # The message to be given to the user
-int32   emotion=0   # Emotion of the message
+int32   emotion     # Emotion of the message
 
 ---
 

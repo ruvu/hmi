@@ -46,7 +46,7 @@ def test_valid_cancel():
         def _determine_answer(self, description, grammar, target, is_preempt_requested):
             return None
 
-        def _set_aborted(self, text):
+        def _set_aborted(self):
             global result_set
             result_set = True
 
